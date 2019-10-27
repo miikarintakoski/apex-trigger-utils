@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Order_Item__c.Delivery_on_hold__c</members>
+        <members>Order_Item__c.Item_Status__c</members>
+        <members>Order_Item__c.Order__c</members>
+        <members>Order_Item__c.Quick_delivery__c</members>
+        <members>Order__c.Delivery_Status__c</members>
+        <members>Order__c.Payment_method__c</members>
+        <members>Order__c.Priority__c</members>
+        <members>Order__c.Status__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Order_Item__c</members>
+        <members>Order__c</members>
+        <name>CustomObject</name>
+    </types>
+    <version>45.0</version>
+</Package>

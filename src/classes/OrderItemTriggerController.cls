@@ -1,11 +1,9 @@
 /**
- * Process automation around Order_Item__c object DML operations
+ * Process automation around Order__c object DML operations
  * @author	Miika Rintakoski
  */
 public class OrderItemTriggerController extends TriggerController {
 
-    private static QueryCache orderCache = new QueryCache('SELECT Id, Payment_Method__c, Priority__c FROM Order__c WHERE Id IN :recordIds');
-    
     protected override void beforeInsert() {
         setQuickDelivery();
         /* All the other logic which is run on order triggers */
@@ -20,7 +18,7 @@ public class OrderItemTriggerController extends TriggerController {
         for(Order_Item__c orderItem : (List<Order_Item__c>)Trigger.New) {
             orderIds.add(orderItem.Order__c);
         }
-        Map<Id, Order__c> orders = new Map<Id, Order__c>((List<Order__c>)orderCache.get(orderIds));
+        Map<Id, Order__c> orders = new Map<Id, Order__c>([SELECT Id, Priority__c FROM Order__c WHERE Id IN :orderIds]);
         for(Order_Item__c orderItem : (List<Order_Item__c>)Trigger.New) {
             System.debug(orders.get(orderItem.Order__c));
             if(orders.get(orderItem.Order__c).Priority__c == 'High') {
@@ -33,6 +31,34 @@ public class OrderItemTriggerController extends TriggerController {
      * Hold delivery for order items when order requires prepayment
      */
     private void setDeliveryOnHold() {
+        Set<Id> orderIds = new Set<Id>();
+        for(Order_Item__c orderItem : (List<Order_Item__c>)Trigger.New) {
+            orderIds.add(orderItem.Order__c);
+        }
+        Map<Id, Order__c> orders = new Map<Id, Order__c>([SELECT Id, Payment_Method__c FROM Order__c WHERE Id IN :orderIds]);
+        for(Order_Item__c orderItem : (List<Order_Item__c>)Trigger.New) {
+            if(orders.get(orderItem.Order__c).Payment_Method__c == 'Prepayment') {
+                orderItem.Delivery_on_hold__c = true;
+            }
+        }
+    }
+    
+    private static QueryCache orderCache = new QueryCache('SELECT Id, Payment_Method__c, Priority__c FROM Order__c WHERE Id IN :recordIds');
+    
+    private void setQuickDeliveryV2() {
+        Set<Id> orderIds = new Set<Id>();
+        for(Order_Item__c orderItem : (List<Order_Item__c>)Trigger.New) {
+            orderIds.add(orderItem.Order__c);
+        }
+        Map<Id, Order__c> orders = new Map<Id, Order__c>((List<Order__c>)orderCache.get(orderIds));
+        for(Order_Item__c orderItem : (List<Order_Item__c>)Trigger.New) {
+            if(orders.get(orderItem.Order__c).Priority__c == 'High') {
+                orderItem.Quick_delivery__c = true;
+            }
+        }
+    }
+    
+    private void setDeliveryOnHoldV2() {
         Set<Id> orderIds = new Set<Id>();
         for(Order_Item__c orderItem : (List<Order_Item__c>)Trigger.New) {
             orderIds.add(orderItem.Order__c);

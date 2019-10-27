@@ -8,6 +8,7 @@
         <members>QueryCache</members>
         <members>QueryCacheTests</members>
         <members>TriggerController</members>
+        <members>UpdateCache</members>
         <name>ApexClass</name>
     </types>
     <types>

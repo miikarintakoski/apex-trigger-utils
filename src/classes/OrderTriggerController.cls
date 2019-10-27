@@ -23,12 +23,14 @@ public class OrderTriggerController extends TriggerController {
                 confirmedOrderIDs.add(order.Id);
             }
         }
-        List<Order_Item__c> toBeConfirmedItems = new List<Order_Item__c>();
-        for(Order_Item__c orderItem : [SELECT Id FROM Order_Item__c WHERE Order__c IN :confirmedOrderIDs]) {
-            orderItem.Item_Status__c = 'Confirmed';
-            toBeConfirmedItems.add(orderItem);
+        if(!confirmedOrderIDs.isEmpty()) {
+            List<Order_Item__c> toBeConfirmedItems = new List<Order_Item__c>();
+            for(Order_Item__c orderItem : [SELECT Id FROM Order_Item__c WHERE Order__c IN :confirmedOrderIDs]) {
+                orderItem.Item_Status__c = 'Confirmed';
+                toBeConfirmedItems.add(orderItem);
+            }
+            update toBeConfirmedItems;
         }
-        update toBeConfirmedItems;
     }
     
 }

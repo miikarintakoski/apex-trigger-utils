@@ -4,18 +4,22 @@
  */
 public class OrderTriggerController extends TriggerController {
 	
+    private static UpdateCache orderItemUpdateCache = new UpdateCache();
+
     protected override void afterInsert() {
         confirmOrderItems(Trigger.New);
         /* All the other logic which is run on order triggers */
         removeDeliveryBlock(Trigger.New);
+        orderItemUpdateCache.updateRecords(true);
     }
     
     protected override void afterUpdate() {
 		confirmOrderItems(Trigger.New);
         /* All the other logic which is run on order triggers */
         removeDeliveryBlock(Trigger.New);
+        orderItemUpdateCache.updateRecords(true);
     }
-	
+ 
     /**
      * Confirms order items when order is confirmed
      * @param	newVersions	The orders that have been created or updated
@@ -33,7 +37,7 @@ public class OrderTriggerController extends TriggerController {
                 orderItem.Item_Status__c = 'Confirmed';
                 toBeConfirmedItems.add(orderItem);
             }
-            update toBeConfirmedItems;
+            orderItemUpdateCache.setRecordsForUpdate(toBeConfirmedItems);
         }
     }
     
@@ -54,7 +58,7 @@ public class OrderTriggerController extends TriggerController {
                 orderItem.Delivery_on_hold__c = false;
                 toBeReleasedItems.add(orderItem);
             }
-            update toBeReleasedItems;
+            orderItemUpdateCache.setRecordsForUpdate(toBeReleasedItems);
         }
     }
     

@@ -5,6 +5,8 @@
         <members>OrderItemTriggerControllerTests</members>
         <members>OrderTriggerController</members>
         <members>OrderTriggerControllerTests</members>
+        <members>QueryCache</members>
+        <members>QueryCacheTests</members>
         <members>TriggerController</members>
         <name>ApexClass</name>
     </types>

@@ -19,7 +19,7 @@ public class OrderTriggerController extends TriggerController {
     private void confirmOrderItems(List<Order__c> newVersions) {
         Set<Id> confirmedOrderIDs = new Set<Id>();
         for(Order__c order : newVersions) {
-            if(order.Status__c == 'Confirmed') {
+            if(order.Status__c == 'Confirmed' && (Trigger.isInsert || ((Order__c)Trigger.OldMap.get(order.Id)).Status__c != 'Confirmed')) {
                 confirmedOrderIDs.add(order.Id);
             }
         }

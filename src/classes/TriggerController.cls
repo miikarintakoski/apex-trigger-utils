@@ -53,5 +53,15 @@ public virtual class TriggerController {
      * Protected method for logic that is run in after undelete trigger
      */
     protected virtual void afterUndelete() {}
-
+    
+    /**
+     * Utility method that checks whether certain field has changed in given record. Only works in trigger context.
+     * NOTE: This method considers record creation as a change always.
+     * @param	record	The record where change is expected
+     * @param	field	The field where change is expected
+     * @return	Whether the value in given field was changed
+     */
+    public Boolean isChanged(SObject record, Schema.SObjectField field) {
+        return (Trigger.isInsert || record.get(field) != Trigger.OldMap.get(record.Id).get(field));
+    }
 }
